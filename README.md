@@ -71,7 +71,7 @@ To get started with this project, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/madkhix/laravel-api.git
+    git clone https://github.com/Madkhix/laravel-api.git
     cd laravel-api
     ```
 
