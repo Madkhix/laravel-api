@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/setup', function () {
+    $credentials = [
+        'email' => 'admin@admin.com',
+        'password' => 'password',
+    ];
+    if (!auth()->attempt($credentials)) {
+        
+        $user = new \App\Models\User();
+        $user->name = 'Admin';
+        $user->email = $credentials['email'];
+        $user->password = bcrypt($credentials['password']);
+        $user->save();
+        
+        if (auth()->attempt($credentials)) {
+        
+            $user = auth()->user();
+            $adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
+            $upadeToken = $user->createToken('update-token', ['create', 'update']);
+            $basicToken = $user->createToken('basic-token');
+    
+            return response()->json([
+                'admin' => $adminToken->plainTextToken,
+                'update' => $upadeToken->plainTextToken,
+                'basic' => $basicToken->plainTextToken,
+            ]);
+        } 
+    } 
+});
